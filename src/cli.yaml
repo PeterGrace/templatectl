@@ -43,13 +43,9 @@ subcommands:
   - remove:
       about: remove a template by its filename or ID
       args:
-        - filename:
-            about: the filename, without extension
-            short: f
-            required: false
-            takes_value: true
         - name:
             about: the name of the template
-            required: false
+            required: true
             short: n
+            long: name
             takes_value: true

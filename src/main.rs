@@ -30,16 +30,24 @@ fn main() -> Result<()> {
         filename = "/usr/share/remarkable/templates/templates.json";
     }
 
-    let templates: TemplateList = TemplateList::new(filename)?;
+    let mut templates: TemplateList = TemplateList::new(filename)?;
     match matches.subcommand_name() {
-        Some("add") => add_entry(templates, filename, matches.clone()),
-        Some("remove") => remove_entry(templates, filename, matches.clone()),
+        Some("add") => {
+            add_entry(&mut templates, matches.clone())?;
+            write_file(filename, serde_json::to_string_pretty(&templates)?)?;
+            Ok(())
+        }
+        Some("remove") => {
+            remove_entry(&mut templates, matches.clone())?;
+            write_file(filename, serde_json::to_string_pretty(&templates)?)?;
+            Ok(())
+        }
         None => bail!("No subcommand specified."),
         _ => bail!("Invalid option provided to subcommand."),
     }
 }
 
-fn add_entry(mut tl: TemplateList, filename: &str, matches: ArgMatches) -> Result<()> {
+fn add_entry(tl: &mut TemplateList, matches: ArgMatches) -> Result<()> {
     let command_matches: &ArgMatches = matches
         .subcommand_matches("add")
         .expect("no arguments specified.");
@@ -48,6 +56,7 @@ fn add_entry(mut tl: TemplateList, filename: &str, matches: ArgMatches) -> Resul
 
     template_object.name = command_matches.value_of("name").unwrap().to_string();
     template_object.filename = command_matches.value_of("filename").unwrap().to_string();
+
     let is_landscape: bool = command_matches.is_present("landscape");
     if is_landscape {
         template_object.landscape = Some(Value::from(true));
@@ -66,12 +75,15 @@ fn add_entry(mut tl: TemplateList, filename: &str, matches: ArgMatches) -> Resul
     };
 
     debug!("{:#?}", serde_json::to_string(&template_object)?);
+    tl.templates.retain(|obj| obj.name != template_object.name);
     tl.templates.push(template_object);
-    write_file(filename, serde_json::to_string_pretty(&tl)?)?;
-    info!("Output written to {}", filename);
 
     Ok(())
 }
-fn remove_entry(mut tl: TemplateList, filename: &str, matches: ArgMatches) -> Result<()> {
+fn remove_entry(tl: &mut TemplateList, matches: ArgMatches) -> Result<()> {
+    let command_matches: &ArgMatches = matches.subcommand_matches("remove").unwrap();
+
+    let template_name = command_matches.value_of("name").unwrap().to_string();
+    tl.templates.retain(|obj| obj.name != template_name);
     Ok(())
 }
