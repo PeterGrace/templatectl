@@ -1,0 +1,47 @@
+name: templatectl
+args:
+  - templatefile:
+      short: f
+      long: template_file
+      value_name: FILE
+      takes_value: true
+  - audit:
+      long: audit
+      takes_value: false
+subcommands:
+  - add:
+      about: add new template
+      args:
+        - name:
+            about: the name of the template
+            required: true
+            short: n
+            takes_value: true
+        - filename:
+            about: path to png file
+            required: true
+            short: f
+            takes_value: true
+        - iconcode:
+            about: specify an icon to use in xochitl
+            required: false
+            short: i
+            takes_value: true
+        - categories:
+            about: one or more categories to list this template under
+            required: false
+            multiple: true
+            takes_value: true
+  - remove:
+      about: remove a template by its filename or ID
+      args:
+        - filename:
+            about: the filename, without extension
+            short: f
+            required: false
+            takes_value: true
+        - name:
+            about: the name of the template
+            required: false
+            short: n
+            takes_value: true
