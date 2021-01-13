@@ -5,18 +5,18 @@ use serde_json::Value;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub(crate) struct TemplateList {
-    templates: Vec<TemplateObject>,
+    pub(crate) templates: Vec<TemplateObject>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Default)]
 pub(crate) struct TemplateObject {
-    name: String,
-    filename: String,
+    pub(crate) name: String,
+    pub(crate) filename: String,
     #[serde(rename = "iconCode")]
-    icon_code: String,
+    pub(crate) icon_code: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    landscape: Option<Value>,
-    categories: Vec<String>,
+    pub(crate) landscape: Option<Value>,
+    pub(crate) categories: Vec<String>,
 }
 
 impl TemplateList {

@@ -5,9 +5,6 @@ args:
       long: template_file
       value_name: FILE
       takes_value: true
-  - audit:
-      long: audit
-      takes_value: false
 subcommands:
   - add:
       about: add new template
@@ -16,20 +13,31 @@ subcommands:
             about: the name of the template
             required: true
             short: n
+            long: name
             takes_value: true
         - filename:
             about: path to png file
             required: true
             short: f
+            long: filename
             takes_value: true
         - iconcode:
             about: specify an icon to use in xochitl
             required: false
             short: i
+            long: icon_code
             takes_value: true
+        - landscape:
+            about: specify that template is landscape mode
+            required: false
+            short: l
+            long: landscape
+            takes_value: false
         - categories:
             about: one or more categories to list this template under
-            required: false
+            short: c
+            long: category
+            min_values: 1
             multiple: true
             takes_value: true
   - remove:
