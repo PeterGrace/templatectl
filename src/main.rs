@@ -1,14 +1,16 @@
 mod file;
 mod models;
 
-use crate::file::write_file;
+use crate::file::{is_template_file, write_file};
 use crate::models::template_objects::TemplateObject;
 use anyhow::{bail, Result};
 use clap::{crate_version, load_yaml, App, ArgMatches};
 use log::{debug, info, warn};
 use models::template_objects::TemplateList;
+use regex::Regex;
 use serde_json::Value;
 use std::env;
+use std::path::Path;
 use std::process::exit;
 
 // Assign memory space for auditable list of crates used
@@ -56,6 +58,35 @@ fn add_entry(tl: &mut TemplateList, matches: ArgMatches) -> Result<()> {
 
     template_object.name = command_matches.value_of("name").unwrap().to_string();
     template_object.filename = command_matches.value_of("filename").unwrap().to_string();
+
+    let png_regex = Regex::new(r"(.*)\.png$").unwrap();
+    let svg_regex = Regex::new(r"(.*)\.svg$").unwrap();
+
+    if png_regex.is_match(template_object.filename.clone().as_str()) {
+        if is_template_file(template_object.filename.clone()) {
+            let caps = png_regex
+                .captures(template_object.filename.as_str())
+                .unwrap();
+            template_object.filename = caps.get(1).unwrap().as_str().to_string();
+        } else {
+            bail!("Specified png file doesn't exist in /usr/share/remarkable/templates.")
+        }
+    } else if svg_regex.is_match(template_object.filename.clone().as_str()) {
+        if is_template_file(template_object.filename.clone()) {
+            let caps = svg_regex
+                .captures(template_object.filename.as_str())
+                .unwrap();
+            template_object.filename = caps.get(1).unwrap().as_str().to_string();
+        } else {
+            bail!("Specified png file doesn't exist in /usr/share/remarkable/templates.")
+        }
+    } else {
+        // filename wasn't either a png or svg, so we'll check to make sure png exists at least.
+
+        if is_template_file(format!("{}.png", template_object.filename.clone())) == false {
+            bail!("Specified template file doesn't exist in png format on device.")
+        }
+    }
 
     let is_landscape: bool = command_matches.is_present("landscape");
     if is_landscape {

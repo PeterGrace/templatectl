@@ -1,7 +1,7 @@
 name: templatectl
 args:
   - templatefile:
-      short: f
+      short: t
       long: template_file
       value_name: FILE
       takes_value: true
