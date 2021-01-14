@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+pkgnames=(templatectl)
+pkgver="0.1.0"
+timestamp="$(date -u +%Y-%m-%dT%H:%MZ)"
+maintainer="Peter Grace <pete.grace@gmail.com>"
+license=MIT
+source=(templatectl.tar.gz)
+sha256sums=(SKIP)
+
+templatectl () {
+    pkgdesc="reMarkable Template Manager"
+    url=https://github.com/PeterGrace/templatectl
+    section=utils
+
+    package() {
+        install -D -m 755 -t "$pkgdir"/opt/bin "$srcdir"/opt/bin/templatectl
+    }
+}
