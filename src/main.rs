@@ -76,7 +76,12 @@ fn add_entry(tl: &mut TemplateList, matches: ArgMatches) -> Result<()> {
             let caps = svg_regex
                 .captures(template_object.filename.as_str())
                 .unwrap();
-            template_object.filename = caps.get(1).unwrap().as_str().to_string();
+            let filename_base = caps.get(1).unwrap().as_str().to_string();
+            if is_template_file(format!("{}.png", filename_base)) == false {
+                bail!("You specified a svg file when its companion svg file does not exist in /usr/share/remarkable/templates.")
+            } else {
+                template_object.filename = filename_base;
+            }
         } else {
             bail!("Specified png file doesn't exist in /usr/share/remarkable/templates.")
         }
