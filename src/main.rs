@@ -96,10 +96,10 @@ fn add_entry(tl: &mut TemplateList, matches: ArgMatches) -> Result<()> {
     let is_landscape: bool = command_matches.is_present("landscape");
     if is_landscape {
         template_object.landscape = Some(Value::from(true));
-        template_object.icon_code = String::from(r"\ue9fd");
+        template_object.icon_code = String::from('\u{e9fd}');
     } else {
         template_object.landscape = Some(Value::from(false));
-        template_object.icon_code = String::from(r"\ue9fe");
+        template_object.icon_code = String::from('\u{e9fe}');
     };
 
     if let Some(icon) = command_matches.value_of("iconcode") {
