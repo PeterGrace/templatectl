@@ -1,19 +1,28 @@
 #!/usr/bin/env bash
+# Copyright (c) 2020 The Toltec Contributors
+# SPDX-License-Identifier: MIT
 
 pkgnames=(templatectl)
-pkgver="0.1.0"
-timestamp="$(date -u +%Y-%m-%dT%H:%MZ)"
+pkgdesc="Tool to add/remove templates for xochitl"
+url=https://github.com/PeterGrace/templatectl
+pkgver=@VERSION@
+timestamp=@TIMESTAMP@
+section=utils
 maintainer="Peter Grace <pete.grace@gmail.com>"
 license=MIT
-source=(templatectl.tar.gz)
-sha256sums=(SKIP)
 
-templatectl () {
-    pkgdesc="reMarkable Template Manager"
-    url=https://github.com/PeterGrace/templatectl
-    section=utils
+image=rust:v1.2.2
+source=(https://github.com/PeterGrace/templatectl/archive/@VERSION@.zip)
+sha256sums=(sha)
 
-    package() {
-        install -D -m 755 -t "$pkgdir"/opt/bin "$srcdir"/opt/bin/templatectl
-    }
+build() {
+    # Fall back to system-wide config
+    rm .cargo/config
+
+    cargo build --release
+}
+
+package() {
+    install -D -m 755 -t "$pkgdir"/opt/bin \
+      "$srcdir"/target/armv7-unknown-linux-gnueabihf/release/templatectl
 }
