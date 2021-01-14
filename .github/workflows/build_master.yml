@@ -1,0 +1,25 @@
+name: build_master
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # Run build
+      - name: build_script
+        working-directory: /home/runner/work/templatectl/templatectl
+        run: |
+          ./ci_build.sh
+
+      - name: Upload built binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: templatectl
+          path: target/armv7-unknown-linux-gnueabihf/release/templatectl
