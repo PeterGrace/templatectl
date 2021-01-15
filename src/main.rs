@@ -5,23 +5,27 @@ use crate::file::{is_template_file, write_file};
 use crate::models::template_objects::TemplateObject;
 use anyhow::{bail, Result};
 use clap::{crate_version, load_yaml, App, ArgMatches};
-use log::{debug, info, warn};
+use hex;
+use log::debug;
 use models::template_objects::TemplateList;
 use regex::Regex;
 use serde_json::Value;
+use snailquote;
 use std::env;
-use std::path::Path;
-use std::process::exit;
 
 // Assign memory space for auditable list of crates used
 static COMPRESSED_DEPENDENCY_LIST: &[u8] = auditable::inject_dependency_list!();
 
 fn main() -> Result<()> {
-    if let Err(e) = std::env::var("RUST_LOG") {
+    if std::env::var("RUST_LOG").is_err() {
         std::env::set_var("RUST_LOG", "warn");
     }
     env_logger::try_init()?;
 
+    debug!(
+        "Auditable crates list enabled ({})",
+        COMPRESSED_DEPENDENCY_LIST[0]
+    );
     let filename: &str;
     let clap_yaml = load_yaml!("cli.yaml");
     let matches = App::from(clap_yaml).version(crate_version!()).get_matches();
@@ -88,8 +92,10 @@ fn add_entry(tl: &mut TemplateList, matches: ArgMatches) -> Result<()> {
     } else {
         // filename wasn't either a png or svg, so we'll check to make sure png exists at least.
 
-        if is_template_file(format!("{}.png", template_object.filename.clone())) == false {
-            bail!("Specified template file doesn't exist in png format on device.")
+        if command_matches.is_present("ignore-no-image") == false {
+            if is_template_file(format!("{}.png", template_object.filename.clone())) == false {
+                bail!("Specified template file doesn't exist in png format on device.")
+            }
         }
     }
 
@@ -103,12 +109,25 @@ fn add_entry(tl: &mut TemplateList, matches: ArgMatches) -> Result<()> {
     };
 
     if let Some(icon) = command_matches.value_of("iconcode") {
-        template_object.icon_code = icon.to_string();
+        match hex::decode(icon) {
+            Ok(_) => {
+                let icon_code = format!(r"\u{{{}}}", icon);
+                debug!("iconcode will be '{}'", icon_code.as_str());
+                match snailquote::unescape(icon_code.as_str()) {
+                    Ok(e) => template_object.icon_code = e,
+                    Err(_) => bail!("unescape errored"),
+                }
+            }
+            Err(_) => {
+                bail!("iconcode specified was not hex. See https://remarkablewiki.com/tips/templates for list of hex codes.");
+            }
+        };
     };
 
-    if let categories = command_matches.values_of_t::<String>("categories").unwrap() {
+    if command_matches.is_present("categories") {
+        let categories = command_matches.values_of_t::<String>("categories").unwrap();
         template_object.categories = categories;
-    };
+    }
 
     debug!("{:#?}", serde_json::to_string(&template_object)?);
     tl.templates.retain(|obj| obj.name != template_object.name);

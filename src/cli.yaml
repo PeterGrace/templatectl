@@ -40,6 +40,11 @@ subcommands:
             min_values: 1
             multiple: true
             takes_value: true
+        - ignore-no-image:
+            about: don't check that image file exists as precursor to continuing work
+            long: ignore-no-image
+            required: false
+            takes_value: false
   - remove:
       about: remove a template by its filename or ID
       args:
