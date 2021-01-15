@@ -111,7 +111,7 @@ fn add_entry(tl: &mut TemplateList, matches: ArgMatches) -> Result<()> {
     if let Some(icon) = command_matches.value_of("iconcode") {
         match hex::decode(icon) {
             Ok(_) => {
-                let icon_code = format!(r"\u{{{}}}", icon);
+                let icon_code = format!("\"\\u{{{}}}\"", icon);
                 debug!("iconcode will be '{}'", icon_code.as_str());
                 match snailquote::unescape(icon_code.as_str()) {
                     Ok(e) => template_object.icon_code = e,
