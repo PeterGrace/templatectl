@@ -16,6 +16,7 @@ pub fn write_file(filepath: &str, file_contents: String) -> Result<()> {
     let file = File::create(filepath)?;
     let mut buf_writer = BufWriter::new(file);
     buf_writer.write_all(file_contents.as_bytes())?;
+    println!("Template file {} has changed.  You may need to restart xochitl for the changes to take effect.",filepath);
     Ok(())
 }
 
