@@ -23,3 +23,7 @@ jobs:
         with:
           name: templatectl
           path: target/armv7-unknown-linux-gnueabihf/release/templatectl
+      - name: Release with Notes
+        uses: softprops/action-gh-release@v1
+        with:
+          files: target/armv7-unknown-linux-gnueabihf/release/templatectl
