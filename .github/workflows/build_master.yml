@@ -2,7 +2,8 @@ name: build_master
 
 on:
   push:
-    branches: [ main ]
+    tags:
+      - '*'
   workflow_dispatch:
 
 jobs:
@@ -17,13 +18,12 @@ jobs:
         working-directory: /home/runner/work/templatectl/templatectl
         run: |
           ./ci_build.sh
-
       - name: Upload built binary
         uses: actions/upload-artifact@v2
         with:
           name: templatectl
           path: target/armv7-unknown-linux-gnueabihf/release/templatectl
-      - name: Release with Notes
-        uses: softprops/action-gh-release@v1
+      - name: Release 
+        uses: ncipollo/release-action@v1.12.0
         with:
-          files: target/armv7-unknown-linux-gnueabihf/release/templatectl
+          artifacts: target/armv7-unknown-linux-gnueabihf/release/templatectl
