@@ -1,6 +1,6 @@
 [package]
 name = "templatectl"
-version = "0.1.4-alpha.0"
+version = "0.1.4"
 authors = ["Peter Grace <pete.grace@gmail.com>"]
 license = "MIT"
 repository = "https://github.com/PeterGrace/templatectl"
