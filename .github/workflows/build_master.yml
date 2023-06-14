@@ -1,29 +1,23 @@
-name: build_master
+name: build Code
 
 on:
   push:
-    tags:
-      - '*'
-  workflow_dispatch:
+    branches:
+      - main
+  pull_request:
+
+
+env:
+  CARGO_TERM_COLOR: always
+
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       # Run build
       - name: build_script
-        working-directory: /home/runner/work/templatectl/templatectl
-        run: |
-          ./ci_build.sh
-      - name: Upload built binary
-        uses: actions/upload-artifact@v2
-        with:
-          name: templatectl
-          path: target/armv7-unknown-linux-gnueabihf/release/templatectl
-      - name: Release 
-        uses: ncipollo/release-action@v1.12.0
-        with:
-          artifacts: target/armv7-unknown-linux-gnueabihf/release/templatectl
+        run: cargo build 
