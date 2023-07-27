@@ -119,7 +119,7 @@ fn add_entry(tl: &mut TemplateList, matches: ArgMatches) -> Result<()> {
                 }
             }
             Err(_) => {
-                bail!("iconcode specified was not hex. See https://remarkablewiki.com/tips/templates for list of hex codes.");
+                bail!("iconcode specified was not hex. See https://web.archive.org/web/20230616024159/https://remarkablewiki.com/tips/templates for list of hex codes.");
             }
         };
     };
