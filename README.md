@@ -1,3 +1,7 @@
+[![rm1](https://img.shields.io/badge/rM1-supported-green)](https://remarkable.com/store/remarkable)
+[![rm2](https://img.shields.io/badge/rM2-supported-green)](https://remarkable.com/store/remarkable-2)
+[![opkg](https://img.shields.io/badge/OPKG-templatectl-blue)](https://toltec-dev.org/)
+
 # templatectl
 A tool for reMarkable tablet users.  Updates the xochitl templates.json file for you programmatically so you don't need to fiddle with json.
 
